@@ -34,5 +34,14 @@ namespace Cartomatic.CmdPrompt.Core
             Console.WriteLine(str);
             ResetConsoleColor(colorBefore);
         }
+
+        public static void WriteErr(string str)
+        {
+            WriteLine(str, ConsoleColor.DarkRed);
+        }
+        public static void WriteOk(string str)
+        {
+            WriteLine(str, ConsoleColor.DarkGreen);
+        }
     }
 }
