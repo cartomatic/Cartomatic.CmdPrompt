@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmdWatcher.cs" />
+    <Compile Include="ConsoleExtentions.cs" />
     <Compile Include="DefaultCmdCommandHandler.cs" />
     <Compile Include="ICmdCommandHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
