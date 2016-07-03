@@ -10,7 +10,7 @@ namespace CmdPrompt
     {
         static void Main(string[] args)
         {
-            var cmdWatcher = new CmdUtils.CmdWatcher();
+            var cmdWatcher = new Cartomatic.CmdPrompt.Core.CmdWatcher();
 
             //setup if needed
             cmdWatcher.Prompt = "CustomPrompt>";

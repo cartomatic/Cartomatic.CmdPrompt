@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CmdUtils
+namespace Cartomatic.CmdPrompt.Core
 {
     /// <summary>
     /// Default command handler
@@ -14,31 +14,51 @@ namespace CmdUtils
         /// <summary>
         /// whether or not the handler's exit command has been called
         /// </summary>
-        bool exit = false;
+        bool _exit = false;
 
         /// <summary>
         /// Command map used to manage command aliases
         /// </summary>
-        Dictionary<string, string> commandMap;
+        Dictionary<string, string> _commandMap;
 
         /// <summary>
         /// ccreates an instance
         /// </summary>
         public DefaultCmdCommandHandler()
         {
-            SetUpCommandMap();
+            SetUpDefaultCommandMap();
         }
 
         /// <summary>
         /// Sets up the command map
         /// </summary>
-        protected void SetUpCommandMap()
+        private void SetUpDefaultCommandMap()
         {
-            commandMap = new Dictionary<string, string>()
+            _commandMap = new Dictionary<string, string>()
             {
-                {"exit","exit"}, {"e","exit"}, {"quit","exit"}, {"q","exit"},
+                {"exit","exit"}, {"e","exit"}, {"quit","exit"}, {"q","exit"}, { "fuckoff", "exit" }, { "spierdalaj", "exit" },
                 {"cls","cls"}
             };
+        }
+
+        /// <summary>
+        /// A hook to set up extra commands or replace the default mapping
+        /// </summary>
+        /// <param name="commands"></param>
+        /// <param name="overwrite"></param>
+        public void SetUpCommandMap(Dictionary<string, string> commands, bool overwrite)
+        {
+            if (overwrite)
+            {
+                _commandMap = commands ?? new Dictionary<string, string>();
+            }
+            else
+            {
+                foreach (var key in commands.Keys)
+                {
+                    _commandMap[key] = commands[key];
+                }
+            }
         }
 
         /// <summary>
@@ -56,7 +76,7 @@ namespace CmdUtils
         /// <returns></returns>
         public virtual bool Exit()
         {
-            return exit;
+            return _exit;
         }
 
         /// <summary>
@@ -102,7 +122,7 @@ namespace CmdUtils
             string outCommand = "unknown";
             try
             {
-                outCommand = commandMap[command.ToLower()];
+                outCommand = _commandMap[command.ToLower()];
             }
             catch { }
             
@@ -116,7 +136,7 @@ namespace CmdUtils
         {
             Console.WriteLine("Bye, bye...");
             Console.WriteLine();
-            exit = true;
+            _exit = true;
         }
 
         /// <summary>

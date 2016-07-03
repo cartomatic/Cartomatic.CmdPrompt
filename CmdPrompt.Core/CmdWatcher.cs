@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CmdUtils
+namespace Cartomatic.CmdPrompt.Core
 {
     /// <summary>
     /// Cmd Watcher monitors the cmd user input and redirects it to ICmdCommandHandler for further processing
@@ -14,22 +14,22 @@ namespace CmdUtils
         /// <summary>
         /// string builder that handles command input
         /// </summary>
-        private StringBuilder sb { get; set; }
+        private StringBuilder Sb { get; set; }
 
         /// <summary>
         /// Command caching list
         /// </summary>
-        private List<string> commandCache { get; set; }
+        private List<string> CommandCache { get; set; }
 
         /// <summary>
         /// Index of a command in the cache; used to browse through commands with up and down arrows
         /// </summary>
-        private int? commandCacheIdx { get; set; }
+        private int? CommandCacheIdx { get; set; }
 
         /// <summary>
         /// Default Prompt
         /// </summary>
-        private static readonly string defaultPrompt = "cmd>";
+        private const string DefaultPrompt = "cmd>";
 
 
         private string _prompt;
@@ -60,7 +60,7 @@ namespace CmdUtils
         /// <summary>
         /// Cmd handler instance
         /// </summary>
-        private ICmdCommandHandler cmdHandler { get; set; }
+        private ICmdCommandHandler CmdHandler { get; set; }
 
 
         /// <summary>
@@ -75,18 +75,18 @@ namespace CmdUtils
                 throw new ArgumentNullException("CmdCommandHandler cannot be null!");
             }
 
-            this.cmdHandler = cmdHandler;
+            this.CmdHandler = cmdHandler;
                         
-            this.Prompt = prompt ?? defaultPrompt;
+            this.Prompt = prompt ?? DefaultPrompt;
         }
 
 
         /// <summary>
         /// Creates a new instance with a specified command handler
         /// </summary>
-        /// <param name="cmdWatcher"></param>
+        /// <param name="cmdHandler"></param>
         public CmdWatcher(ICmdCommandHandler cmdHandler)
-            : this(cmdHandler, defaultPrompt)
+            : this(cmdHandler, DefaultPrompt)
         { }
 
         /// <summary>
@@ -104,15 +104,15 @@ namespace CmdUtils
         public void Init()
         {
             //reset string builder if this watcher is to be reused.
-            sb = new StringBuilder();
+            Sb = new StringBuilder();
             //and do the same to the commands cache
-            commandCache = new List<string>();
+            CommandCache = new List<string>();
 
-            cmdHandler.PrintHandlerInfo();
+            CmdHandler.PrintHandlerInfo();
 
             PrintPrompt();
 
-            while (!cmdHandler.Exit())
+            while (!CmdHandler.Exit())
             {
                 HandleInput();
             }
@@ -127,7 +127,7 @@ namespace CmdUtils
 
             //should only react to 'real' chars and ignore non char characters
             //so need to test unicode category
-            var ucc = Char.GetUnicodeCategory(cki.KeyChar);
+            var ucc = char.GetUnicodeCategory(cki.KeyChar);
 
 
             //ignore control chars
@@ -137,11 +137,11 @@ namespace CmdUtils
 
                 if (cursorPosition != GetPromptAndCommandLength() + 1)
                 {
-                    sb.Insert(cursorPosition - GetPromptLength() - 1, cki.KeyChar);
+                    Sb.Insert(cursorPosition - GetPromptLength() - 1, cki.KeyChar);
                 }
                 else
                 {
-                    sb.Append(cki.KeyChar);
+                    Sb.Append(cki.KeyChar);
                 }
 
                 PrintWithPrompt(cursorPosition: cursorPosition);
@@ -200,19 +200,19 @@ namespace CmdUtils
         private void HandleDownArrow()
         {
             //work out the index of a command typed after the one the idx points to currently
-            if (commandCacheIdx.HasValue)
+            if (CommandCacheIdx.HasValue)
             {
-                if (commandCacheIdx + 1 < commandCache.Count)
+                if (CommandCacheIdx + 1 < CommandCache.Count)
                 {
-                    commandCacheIdx += 1;
+                    CommandCacheIdx += 1;
                 }
                 else
                 {
-                    commandCacheIdx = commandCache.Count - 1;
+                    CommandCacheIdx = CommandCache.Count - 1;
                 }
 
                 //and print it
-                PrintCachedCommand(commandCacheIdx);
+                PrintCachedCommand(CommandCacheIdx);
             }
             else
             {
@@ -226,23 +226,23 @@ namespace CmdUtils
         /// </summary>
         private void HandleUpArrow()
         {
-            if (commandCacheIdx.HasValue)
+            if (CommandCacheIdx.HasValue)
             {
-                if (commandCacheIdx - 1 >= 0)
+                if (CommandCacheIdx - 1 >= 0)
                 {
-                    commandCacheIdx -= 1;
+                    CommandCacheIdx -= 1;
                 }
                 else
                 {
-                    commandCacheIdx = 0;
+                    CommandCacheIdx = 0;
                 }
             }
             else
             {
                 //if there is cache set the idx to the last cmd
-                if (commandCache.Count > 0)
+                if (CommandCache.Count > 0)
                 {
-                    commandCacheIdx = commandCache.Count - 1;
+                    CommandCacheIdx = CommandCache.Count - 1;
                 }
                 //otherwise handle the cursor postion properly
                 else
@@ -253,7 +253,7 @@ namespace CmdUtils
             }
 
             //and print it
-            PrintCachedCommand(commandCacheIdx);
+            PrintCachedCommand(CommandCacheIdx);
         }
 
         /// <summary>
@@ -261,8 +261,8 @@ namespace CmdUtils
         /// </summary>
         private void HandleEscape()
         {
-            int currentLength = sb.Length + 1; //so the esc char is also wiped out
-            sb.Clear();
+            int currentLength = Sb.Length + 1; //so the esc char is also wiped out
+            Sb.Clear();
             PrintWithPrompt(currentLength);
         }
 
@@ -305,9 +305,9 @@ namespace CmdUtils
         private void HandleBackspace()
         {
             //remove a char
-            if (sb.Length > 0)
+            if (Sb.Length > 0)
             {
-                sb.Remove(sb.Length - 1, 1);
+                Sb.Remove(Sb.Length - 1, 1);
             }
             PrintWithPrompt(1);
         }
@@ -318,12 +318,12 @@ namespace CmdUtils
         /// </summary>
         private void HandleEnter()
         {
-            var command = sb.ToString();
+            var command = Sb.ToString();
 
             //cache the executing command
-            if (!string.IsNullOrWhiteSpace(command) && (commandCache.Count == 0 || commandCache[commandCache.Count - 1] != command))
+            if (!string.IsNullOrWhiteSpace(command) && (CommandCache.Count == 0 || CommandCache[CommandCache.Count - 1] != command))
             {
-                commandCache.Add(command);
+                CommandCache.Add(command);
             }
 
             ResetPreviousCommandCacheIndex();
@@ -332,13 +332,13 @@ namespace CmdUtils
             Console.Write(Environment.NewLine);
 
             //and redirect the command handling to the cmd handler
-            cmdHandler.HandleCommand(command);
+            CmdHandler.HandleCommand(command);
 
             //check if should continue watching cmd or can quit
-            if (!cmdHandler.Exit())
+            if (!CmdHandler.Exit())
             {
                 //wipe out string builder
-                sb.Clear();
+                Sb.Clear();
                 
                 PrintPrompt();
             }
@@ -350,7 +350,7 @@ namespace CmdUtils
         private void ResetPreviousCommandCacheIndex()
         {
             //reset the commandCache idx
-            commandCacheIdx = null;
+            CommandCacheIdx = null;
         }
 
 
@@ -359,21 +359,21 @@ namespace CmdUtils
         /// </summary>
         private void PrintCachedCommand(int? idx)
         {
-            if (idx.HasValue && idx >= 0 && idx < commandCache.Count)
+            if (idx.HasValue && idx >= 0 && idx < CommandCache.Count)
             {
                 //grab the cached command
-                var newCmd = commandCache[(int)idx];
+                var newCmd = CommandCache[(int)idx];
 
                 //work out if leaning the console after the new command is required
                 var clear = 0;
-                if (newCmd.Length < sb.Length)
+                if (newCmd.Length < Sb.Length)
                 {
-                    clear = sb.Length - newCmd.Length;
+                    clear = Sb.Length - newCmd.Length;
                 }
 
                 //set new cmd on the string builder
-                sb.Clear();
-                sb.Append(newCmd);
+                Sb.Clear();
+                Sb.Append(newCmd);
 
                 //and print it
                 PrintWithPrompt(clear);
@@ -396,7 +396,7 @@ namespace CmdUtils
         /// <returns></returns>
         private int GetPromptAndCommandLength()
         {
-            return GetPromptLength() + sb.Length;
+            return GetPromptLength() + Sb.Length;
         }
 
         /// <summary>
@@ -419,7 +419,7 @@ namespace CmdUtils
             Console.CursorLeft = 0;
 
             PrintPrompt();
-            Console.Write(sb.ToString());
+            Console.Write(Sb.ToString());
 
             if (clearAfter > 0)
             {
