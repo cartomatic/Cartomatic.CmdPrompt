@@ -153,7 +153,7 @@ namespace Cartomatic.CmdPrompt.Core
 
             var args = command.Split(' ');
 
-            if (!GetSupportedCommandNames(discardPrivate: false).Contains(command))
+            if (!GetSupportedCommandNames(discardPrivate: false).Contains(args[0]))
             {
                 try
                 {
@@ -167,7 +167,7 @@ namespace Cartomatic.CmdPrompt.Core
             }
             else
             {
-                outCommand = command;
+                outCommand = args[0];
             }
             
 
@@ -370,7 +370,7 @@ namespace Cartomatic.CmdPrompt.Core
         /// <returns></returns>
         protected string NormaliseBoolStr(string v)
         {
-            var outV = v;
+             var outV = v;
 
             switch (v.ToLower())
             {
