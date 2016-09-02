@@ -20,9 +20,9 @@ namespace Cartomatic.CmdPrompt.Core
         bool _exit = false;
 
         /// <summary>
-        /// Command map used to manage command aliases
+        /// Alias map used to manage command aliases
         /// </summary>
-        Dictionary<string, string> _commandMap;
+        Dictionary<string, string> _aliasMap;
 
         private readonly string _cmdInfo = "Default cmd handler... v 1.0.0";
 
@@ -36,7 +36,7 @@ namespace Cartomatic.CmdPrompt.Core
             {
                 _cmdInfo = cmdInfo;
             }
-            SetUpDefaultCommandMap();
+            SetUpDefaultAliasMap();
         }
 
         /// <summary>
@@ -44,39 +44,36 @@ namespace Cartomatic.CmdPrompt.Core
         /// </summary>
         public DefaultCmdCommandHandler()
         {
-            SetUpDefaultCommandMap();
+            SetUpDefaultAliasMap();
         }
 
         /// <summary>
         /// Sets up the command map
         /// </summary>
-        private void SetUpDefaultCommandMap()
+        private void SetUpDefaultAliasMap()
         {
-            _commandMap = new Dictionary<string, string>()
+            _aliasMap = new Dictionary<string, string>()
             {
-                {"exit","exit"}, {"e","exit"}, {"quit","exit"}, {"q","exit"}, { "fuckoff", "exit" }, { "spierdalaj", "exit" },
-                {"cls","cls"},
-                { "help", "help" },
-                { "selftest", "selftest" }
+                {"e","exit"}, {"quit","exit"}, {"q","exit"}, { "fuckoff", "exit" }, { "spierdalaj", "exit" }
             };
         }
 
         /// <summary>
         /// A hook to set up extra commands or replace the default mapping
         /// </summary>
-        /// <param name="commands"></param>
+        /// <param name="aliases"></param>
         /// <param name="overwrite"></param>
-        public void SetUpCommandMap(Dictionary<string, string> commands, bool overwrite = false)
+        public void SetUpCommandMap(Dictionary<string, string> aliases, bool overwrite = false)
         {
             if (overwrite)
             {
-                _commandMap = commands ?? new Dictionary<string, string>();
+                _aliasMap = aliases ?? new Dictionary<string, string>();
             }
             else
             {
-                foreach (var key in commands.Keys)
+                foreach (var key in aliases.Keys)
                 {
-                    _commandMap[key] = commands[key];
+                    _aliasMap[key] = aliases[key];
                 }
             }
         }
@@ -139,7 +136,7 @@ namespace Cartomatic.CmdPrompt.Core
             else
             {
                 //just in case the mapping is defined, but method is not
-                Handle_Unknown(command);
+                HandleUnknown(command);
             }
         }
         
@@ -154,13 +151,29 @@ namespace Cartomatic.CmdPrompt.Core
             var outCommand = "not_recognised";
             arguments = null;
 
-            
-            try
-            {
-                var args = command.Split(' ');
+            var args = command.Split(' ');
 
-                outCommand = _commandMap[args[0].ToLower()];
-                
+            if (!GetSupportedCommandNames(discardPrivate: false).Contains(command))
+            {
+                try
+                {
+                    //command handler unknown, so need to check the alias map
+                    outCommand = _aliasMap[args[0].ToLower()];
+                }
+                catch
+                {
+                    //ignore
+                }
+            }
+            else
+            {
+                outCommand = command;
+            }
+            
+
+            //extract args if it makes sense
+            if (outCommand != "not_recognised")
+            {
                 arguments = new Dictionary<string, string>();
 
                 //extract all params but command!
@@ -174,10 +187,6 @@ namespace Cartomatic.CmdPrompt.Core
                     var pName = paramParts[0];
                     arguments[pName] = paramParts.Length == 2 ? paramParts[1] : string.Empty;
                 }
-            }
-            catch
-            {
-                //ignore
             }
 
             return outCommand;
@@ -201,15 +210,6 @@ namespace Cartomatic.CmdPrompt.Core
             Console.Clear();
         }
 
-        protected virtual void Handle_Unknown(string command)
-        {
-            if (!string.IsNullOrEmpty(command))
-            {
-                ConsoleEx.WriteLine($"Sorry mate, but '{command}' is not something I recognise...", ConsoleColor.DarkRed);
-                Console.WriteLine();
-            }
-        }
-
         /// <summary>
         /// Justg a test command
         /// </summary>
@@ -220,11 +220,13 @@ namespace Cartomatic.CmdPrompt.Core
             if (GetHelp(args))
             {
                 Console.WriteLine("This is a selftest help. The command is registered properly!");
+                Console.WriteLine();
 
                 return;
             }
 
             Console.WriteLine("This is a selftest command output. The command is registered properly!");
+            Console.WriteLine();
         }
 
         /// <summary>
@@ -244,6 +246,15 @@ namespace Cartomatic.CmdPrompt.Core
 
         //Utils
         //----------------------------------------------------------------------------------------------------------------------------
+
+        protected virtual void HandleUnknown(string command)
+        {
+            if (!string.IsNullOrEmpty(command))
+            {
+                ConsoleEx.WriteLine($"Sorry mate, but '{command}' is not something I recognise...", ConsoleColor.DarkRed);
+                Console.WriteLine();
+            }
+        }
 
         /// <summary>
         /// Whether or not help was requested in args
@@ -265,23 +276,35 @@ namespace Cartomatic.CmdPrompt.Core
             return callerNameName.ToLower().Replace("handle_", "");
         }
 
-        
+        /// <summary>
+        /// extracts command names supported by this command handler
+        /// </summary>
+        /// <param name="discardPrivate"></param>
+        /// <returns></returns>
+        protected IEnumerable<string> GetSupportedCommandNames(bool discardPrivate = true)
+        {
+            var t = this.GetType();
+            var methods = t.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase)
+                             .Where(m => m.Name.ToLower().StartsWith("handle_"))
+                             .Select(m => m.Name.ToLower().Replace("handle_", ""));
+            return discardPrivate
+                ? methods.Where(m => m != "selftest")
+                : methods;
+        } 
+
 
         /// <summary>
         /// Prints currently supported commands
         /// </summary>
         protected virtual void PrintCommands()
         {
-            var t = this.GetType();
-            var methods =
-                t.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase)
-                             .Where(m => m.Name.ToLower().StartsWith("handle_") && !new[] { "handle_unknown", "handle_selftest"}.Contains(m.Name.ToLower()))
-                             .Select(m => m.Name.ToLower().Replace("handle_", ""));
-
             Console.WriteLine("Supported commands are:");
-            foreach (var method in methods)
+
+            var methods = GetSupportedCommandNames();
+
+            foreach (var method in GetSupportedCommandNames())
             {
-                var aliases = _commandMap.Where(cm => cm.Value == method && cm.Key != method).Select(cm => cm.Key).ToList();
+                var aliases = _aliasMap.Where(cm => cm.Value == method && cm.Key != method).Select(cm => cm.Key).ToList();
 
                 ConsoleEx.Write(method, ConsoleColor.DarkMagenta);
 
@@ -290,7 +313,6 @@ namespace Cartomatic.CmdPrompt.Core
                 Console.Write(Environment.NewLine);
             }
             Console.WriteLine();
-
         }
 
         /// <summary>
@@ -328,7 +350,7 @@ namespace Cartomatic.CmdPrompt.Core
                 if (typeof (T) == typeof (bool) || typeof (T) == typeof (bool?))
                 {
                     bool boolValue;
-                    if (bool.TryParse(stringPValue, out boolValue))
+                    if (bool.TryParse(NormaliseBoolStr(stringPValue), out boolValue))
                         pValue = boolValue;
                 }
                 //else if ()
@@ -341,6 +363,30 @@ namespace Cartomatic.CmdPrompt.Core
             return (T)pValue;
         }
 
+        /// <summary>
+        /// Normalises a bool input string so strings like t, 1, f, 0 can also be recognised
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        protected string NormaliseBoolStr(string v)
+        {
+            var outV = v;
+
+            switch (v.ToLower())
+            {
+                case "1":
+                case "t":
+                    outV = "true";
+                    break;
+
+                case "f":
+                case "0":
+                    outV = "false";
+                    break;
+            }
+
+            return outV;
+        }
 
         /// <summary>
         /// Prompts user to answer a specified question
