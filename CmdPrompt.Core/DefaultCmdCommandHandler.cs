@@ -2,6 +2,8 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -102,7 +104,7 @@ namespace Cartomatic.CmdPrompt.Core
         /// Handles a cmd command
         /// </summary>
         /// <param name="command"></param>
-        public virtual void HandleCommand(string command)
+        public virtual async Task HandleCommand(string command)
         {
             IDictionary<string,string> args = null;
             var nc = NormaliseCommand(command, out args);
@@ -124,7 +126,15 @@ namespace Cartomatic.CmdPrompt.Core
                     p = new object[] { args };
                 }
 
-                m.Invoke(this, p);
+                var async = m.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null;
+                if (async)
+                {
+                    await (Task)m.Invoke(this, p);
+                }
+                else
+                {
+                    m.Invoke(this, p);
+                }
             }
             else
             {

@@ -17,7 +17,7 @@ namespace Cartomatic.CmdPrompt.Core
         /// Handles a cmd command
         /// </summary>
         /// <param name="command"></param>
-        void HandleCommand(string command);
+        Task HandleCommand(string command);
 
         /// <summary>
         /// Indicates whether the state of the exit flag; client should exit if true

@@ -101,7 +101,7 @@ namespace Cartomatic.CmdPrompt.Core
         /// <summary>
         /// Initiate Cmd watcher - passes the control to the watcher. Only when ICommandHandler reports exit, the watcher also exits
         /// </summary>
-        public void Init()
+        public async Task Init()
         {
             //reset string builder if this watcher is to be reused.
             Sb = new StringBuilder();
@@ -114,14 +114,14 @@ namespace Cartomatic.CmdPrompt.Core
 
             while (!CmdHandler.Exit())
             {
-                HandleInput();
+                await HandleInput();
             }
         }
 
         /// <summary>
         /// Handles user input
         /// </summary>
-        private void HandleInput()
+        private async Task HandleInput()
         {
             var cki = Console.ReadKey(false);
 
@@ -160,7 +160,7 @@ namespace Cartomatic.CmdPrompt.Core
                         break;
 
                     case ConsoleKey.Enter:
-                        HandleEnter();
+                        await HandleEnter();
                         break;
 
                     case ConsoleKey.LeftArrow:
@@ -316,7 +316,7 @@ namespace Cartomatic.CmdPrompt.Core
         /// <summary>
         /// Handles enter
         /// </summary>
-        private void HandleEnter()
+        private async Task HandleEnter()
         {
             var command = Sb.ToString();
 
@@ -332,7 +332,7 @@ namespace Cartomatic.CmdPrompt.Core
             Console.Write(Environment.NewLine);
 
             //and redirect the command handling to the cmd handler
-            CmdHandler.HandleCommand(command);
+            await CmdHandler.HandleCommand(command);
 
             //check if should continue watching cmd or can quit
             if (!CmdHandler.Exit())
