@@ -316,6 +316,17 @@ namespace Cartomatic.CmdPrompt.Core
         }
 
         /// <summary>
+        /// Whether or not param has been supplied
+        /// </summary>
+        /// <param name="pName"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        protected virtual bool ContainsParam(string pName, IDictionary<string, string> args)
+        {
+            return args.ContainsKey(pName);
+        }
+
+        /// <summary>
         /// Extracts string param value off the args
         /// </summary>
         /// <param name="pName"></param>
