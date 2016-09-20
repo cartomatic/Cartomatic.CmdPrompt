@@ -332,7 +332,23 @@ namespace Cartomatic.CmdPrompt.Core
             Console.Write(Environment.NewLine);
 
             //and redirect the command handling to the cmd handler
-            await CmdHandler.HandleCommand(command);
+            try
+            {
+                await CmdHandler.HandleCommand(command);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                ConsoleEx.WriteErr("Uncaught exception occurred:");
+
+                while (ex != null)
+                {
+                    ConsoleEx.WriteLine(ex.Message, ConsoleColor.DarkMagenta);
+                    ConsoleEx.WriteLine(new string('-', 25), ConsoleColor.DarkMagenta);
+                    ex = ex.InnerException;
+                }
+                Console.WriteLine();
+            }
 
             //check if should continue watching cmd or can quit
             if (!CmdHandler.Exit())
