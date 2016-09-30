@@ -358,7 +358,7 @@ namespace Cartomatic.CmdPrompt.Core
                     if (int.TryParse(stringPValue, out intValue))
                         pValue = intValue;
                 }
-                if (typeof (T) == typeof (bool) || typeof (T) == typeof (bool?))
+                else if (typeof (T) == typeof (bool) || typeof (T) == typeof (bool?))
                 {
                     bool boolValue;
                     if (bool.TryParse(NormaliseBoolStr(stringPValue), out boolValue))
