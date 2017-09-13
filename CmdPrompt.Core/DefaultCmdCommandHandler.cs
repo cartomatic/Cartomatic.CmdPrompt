@@ -169,7 +169,9 @@ namespace Cartomatic.CmdPrompt.Core
             {
                 outCommand = args[0];
             }
-            
+
+            if (HiddenCommands.Contains(outCommand))
+                outCommand = "not_recognised";
 
             //extract args if it makes sense
             if (outCommand != "not_recognised")
@@ -276,6 +278,20 @@ namespace Cartomatic.CmdPrompt.Core
             return callerNameName.ToLower().Replace("handle_", "");
         }
 
+        protected List< string > HiddenCommands = new List<string>
+        {
+            "selftest"
+        };
+
+        /// <summary>
+        /// hides given set of commands from help
+        /// </summary>
+        /// <param name="commands"></param>
+        protected void HideCommands(params string[] commands)
+        {
+            HiddenCommands.AddRange(commands);
+        }
+
         /// <summary>
         /// extracts command names supported by this command handler
         /// </summary>
@@ -288,7 +304,7 @@ namespace Cartomatic.CmdPrompt.Core
                              .Where(m => m.Name.ToLower().StartsWith("handle_"))
                              .Select(m => m.Name.ToLower().Replace("handle_", ""));
             return discardPrivate
-                ? methods.Where(m => m != "selftest")
+                ? methods.Where(m => !HiddenCommands.Contains(m))
                 : methods;
         } 
 
