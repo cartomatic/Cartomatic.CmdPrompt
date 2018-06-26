@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdPrompt", "CmdPrompt\CmdPrompt.csproj", "{A7C57D13-A64F-49B8-A2B4-7DD579C3407E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdPrompt.Core", "CmdPrompt.Core\CmdPrompt.Core.csproj", "{014923B2-0393-4E00-86E5-67F0AA222081}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdPrompt.Core.Old", "CmdPrompt.Core.Old\CmdPrompt.Core.Old.csproj", "{014923B2-0393-4E00-86E5-67F0AA222081}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cartomatic.CmdPrompt.Core", "CmdPrompt.Core\Cartomatic.CmdPrompt.Core.csproj", "{CC338B47-31B9-44F8-BB9A-072C700970D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +23,15 @@ Global
 		{014923B2-0393-4E00-86E5-67F0AA222081}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{014923B2-0393-4E00-86E5-67F0AA222081}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{014923B2-0393-4E00-86E5-67F0AA222081}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC338B47-31B9-44F8-BB9A-072C700970D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC338B47-31B9-44F8-BB9A-072C700970D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC338B47-31B9-44F8-BB9A-072C700970D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC338B47-31B9-44F8-BB9A-072C700970D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1DF5EC5B-3208-4AE4-89A5-C7EE6828B1F0}
 	EndGlobalSection
 EndGlobal

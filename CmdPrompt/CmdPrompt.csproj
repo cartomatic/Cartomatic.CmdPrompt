@@ -49,9 +49,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CmdPrompt.Core\CmdPrompt.Core.csproj">
-      <Project>{014923b2-0393-4e00-86e5-67f0aa222081}</Project>
-      <Name>CmdPrompt.Core</Name>
+    <ProjectReference Include="..\CmdPrompt.Core\Cartomatic.CmdPrompt.Core.csproj">
+      <Project>{cc338b47-31b9-44f8-bb9a-072c700970d1}</Project>
+      <Name>Cartomatic.CmdPrompt.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
