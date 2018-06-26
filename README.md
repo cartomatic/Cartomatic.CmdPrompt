@@ -1,1 +1,3 @@
 A simple cmd with a prompt...
+
+Install-Package Cartomatic.CmdPrompt.Core
