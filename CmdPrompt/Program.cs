@@ -17,8 +17,8 @@ namespace CmdPrompt
             cmdWatcher.PromptColor = ConsoleColor.DarkCyan;
 
             
-
-            cmdWatcher.Init();
+            //print handler info - by default it is on handler's discretion to print whatever seems suitable...
+            cmdWatcher.Init(true);
 
 
             Console.ReadLine();

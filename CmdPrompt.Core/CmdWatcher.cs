@@ -101,14 +101,15 @@ namespace Cartomatic.CmdPrompt.Core
         /// <summary>
         /// Initiate Cmd watcher - passes the control to the watcher. Only when ICommandHandler reports exit, the watcher also exits
         /// </summary>
-        public async Task Init()
+        public async Task Init(bool printHandlerInfo = false)
         {
             //reset string builder if this watcher is to be reused.
             Sb = new StringBuilder();
             //and do the same to the commands cache
             CommandCache = new List<string>();
 
-            CmdHandler.PrintHandlerInfo();
+            if(printHandlerInfo)
+                CmdHandler.PrintHandlerInfo();
 
             PrintPrompt();
 
