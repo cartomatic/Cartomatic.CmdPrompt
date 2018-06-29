@@ -103,8 +103,7 @@ namespace Cartomatic.CmdPrompt.Core
         /// <param name="command"></param>
         public virtual async Task HandleCommand(string command)
         {
-            IDictionary<string,string> args = null;
-            var nc = NormaliseCommand(command, out args);
+            var nc = NormaliseCommand(command, out var args);
 
             var t = this.GetType();
             var m = t.GetMethod(
@@ -339,7 +338,7 @@ namespace Cartomatic.CmdPrompt.Core
         /// <returns></returns>
         protected virtual bool ContainsParam(string pName, IDictionary<string, string> args)
         {
-            return args.ContainsKey(pName);
+            return args != null && args.ContainsKey(pName);
         }
 
         /// <summary>
@@ -370,14 +369,12 @@ namespace Cartomatic.CmdPrompt.Core
 
                 if (typeof (T) == typeof (int) || typeof(T) == typeof(int?))
                 {
-                    int intValue;
-                    if (int.TryParse(stringPValue, out intValue))
+                    if (int.TryParse(stringPValue, out var intValue))
                         pValue = intValue;
                 }
                 else if (typeof (T) == typeof (bool) || typeof (T) == typeof (bool?))
                 {
-                    bool boolValue;
-                    if (bool.TryParse(NormaliseBoolStr(stringPValue), out boolValue))
+                    if (bool.TryParse(NormaliseBoolStr(stringPValue), out var boolValue))
                         pValue = boolValue;
                 }
                 //else if ()

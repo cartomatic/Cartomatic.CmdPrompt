@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Description>a simple cmd prompt for cmd style utils
 not supported utility
 use at your own risk</Description>
