@@ -186,7 +186,15 @@ namespace Cartomatic.CmdPrompt.Core
                         continue;
 
                     var pName = paramParts[0];
-                    arguments[pName] = paramParts.Length == 2 ? paramParts[1] : string.Empty;
+                    arguments[pName] = paramParts.Length == 2 
+                        ? paramParts[1] //standar param with no dashes and such
+                        : string.Empty; //initially no value
+
+                    //more bits and pieces - glue back remaining stuff!
+                    if (paramParts.Length > 2)
+                    {
+                        arguments[pName] = string.Join(":", paramParts.Skip(1));
+                    }
                 }
             }
 
