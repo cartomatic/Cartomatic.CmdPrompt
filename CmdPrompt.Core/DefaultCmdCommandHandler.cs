@@ -52,31 +52,30 @@ namespace Cartomatic.CmdPrompt.Core
         /// </summary>
         private void SetUpDefaultAliasMap()
         {
-            _aliasMap = new Dictionary<string, string>()
-            {
-                {"e","exit"}, {"quit","exit"}, {"q","exit"}, { "fuckoff", "exit" }, { "spierdalaj", "exit" }
-            };
+            _aliasMap = new CommandMap()
+                .AddAliases(nameof(Handle_Exit), "e", "quit", "q", "fuckoff", "spierdalaj");
         }
 
         /// <summary>
         /// A hook to set up extra commands or replace the default mapping
         /// </summary>
-        /// <param name="aliases"></param>
+        /// <param name="commandMap"></param>
         /// <param name="overwrite"></param>
-        public void SetUpCommandMap(Dictionary<string, string> aliases, bool overwrite = false)
+        public void SetUpCommandMap(CommandMap commandMap, bool overwrite = false)
         {
             if (overwrite)
             {
-                _aliasMap = aliases ?? new Dictionary<string, string>();
+                _aliasMap = commandMap ?? new Dictionary<string, string>();
             }
             else
             {
-                foreach (var key in aliases.Keys)
+                foreach (var key in commandMap.Keys)
                 {
-                    _aliasMap[key] = aliases[key];
+                    _aliasMap[key] = commandMap[key];
                 }
             }
         }
+
 
         /// <summary>
         /// Prints handler specific info; used to give some init info like cmd version and stuff
