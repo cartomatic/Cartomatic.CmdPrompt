@@ -233,3 +233,4 @@ _Pvt_Extensions
 #ncrunch
 *.ncrunchproject
 *.ncrunchsolution
+CmdPrompt.Core/_nuget-cmd/_nuget-with-key.cmd
