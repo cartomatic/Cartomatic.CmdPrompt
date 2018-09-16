@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>1.0.5-dev0002</Version>
+    <Version>1.0.7</Version>
     <Description>a simple cmd prompt for cmd style utils
 not supported utility
 use at your own risk</Description>
@@ -11,6 +11,11 @@ use at your own risk</Description>
     <PackageLicenseUrl>https://github.com/cartomatic/CmdPrompt/blob/master/license.txt</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/cartomatic/CmdPrompt</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <DocumentationFile>E:\Cartomatic\CmdPrompt\CmdPrompt.Core\Cartomatic.CmdPrompt.Core.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

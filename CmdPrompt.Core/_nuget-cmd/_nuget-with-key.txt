@@ -1,0 +1,1 @@
+dotnet nuget push CmdPrompt.Core\bin\Release\Cartomatic.CmdPrompt.Core.1.0.7.nupkg -k oy2dtk5cwph5dcunwzzq22nak7hsoyjudmd62ju3jqg6hu -s https://api.nuget.org/v3/index.json

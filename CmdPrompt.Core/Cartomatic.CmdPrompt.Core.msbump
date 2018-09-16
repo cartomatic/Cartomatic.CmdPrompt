@@ -6,7 +6,7 @@
     },
 
     "Release": {
-      "BumpPatch": true,
+      //"BumpPatch": true,
       "ResetLabel": "dev"
     }
   }
