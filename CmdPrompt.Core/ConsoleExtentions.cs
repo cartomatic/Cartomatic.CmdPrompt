@@ -38,7 +38,7 @@ namespace Cartomatic.CmdPrompt.Core
         {
             WriteLine(str, ConsoleColor.DarkRed);
         }
-        public static void WriteOk(string str)
+        public static void WriteOk(string str = "Ok!")
         {
             WriteLine(str, ConsoleColor.DarkGreen);
         }
