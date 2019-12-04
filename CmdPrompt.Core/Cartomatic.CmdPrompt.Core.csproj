@@ -15,7 +15,11 @@ use at your own risk</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <DocumentationFile>E:\Cartomatic\CmdPrompt\CmdPrompt.Core\Cartomatic.CmdPrompt.Core.xml</DocumentationFile>
+    <DocumentationFile>obj\Cartomatic.CmdPrompt.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>obj\Cartomatic.CmdPrompt.Core.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
